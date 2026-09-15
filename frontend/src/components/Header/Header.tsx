@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import {
-  Compass,
   MapPin,
   Volume2,
   VolumeX,
-  Layers,
-  Database,
-  Info,
-  TrendingUp,
-  Radio,
   Sliders,
-  Sparkles,
-  Satellite,
-  Activity
+  Satellite
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
-  { code: 'hi', name: '?????? (Hindi)' },
-  { code: 'ta', name: '????? (Tamil)' },
-  { code: 'te', name: '?????? (Telugu)' },
-  { code: 'ml', name: '?????? (Malayalam)' },
-  { code: 'kn', name: '????? (Kannada)' },
-  { code: 'bn', name: '????? (Bengali)' },
-  { code: 'mr', name: '????? (Marathi)' },
-  { code: 'gu', name: '??????? (Gujarati)' },
-  { code: 'or', name: '????? (Odia)' },
+  { code: 'hi', name: 'हिन्दी (Hindi)' },
+  { code: 'ta', name: 'தமிழ் (Tamil)' },
+  { code: 'te', name: 'తెలుగు (Telugu)' },
+  { code: 'ml', name: 'മലയാളം (Malayalam)' },
+  { code: 'kn', name: 'ಕನ್ನಡ (Kannada)' },
+  { code: 'bn', name: 'বাংলা (Bengali)' },
+  { code: 'mr', name: 'मराठी (Marathi)' },
+  { code: 'gu', name: 'ગુજરાતી (Gujarati)' },
+  { code: 'or', name: 'ଓଡ଼ିଆ (Odia)' },
 ];
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const {
     activeLocation,
     activeLocationName,
@@ -58,125 +50,123 @@ export const Header: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleApplyCoords = (e: React.FormEvent) => {
+  const handleApplyCoords = (e: FormEvent) => {
     e.preventDefault();
     const lat = parseFloat(inputLat);
     const lon = parseFloat(inputLon);
     if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-      setActiveLocation({ latitude: lat, longitude: lon }, `Custom: ${lat.toFixed(4)}?N, ${lon.toFixed(4)}?E`);
+      setActiveLocation({ latitude: lat, longitude: lon }, `Custom: ${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`);
       setShowCoordModal(false);
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-xl border-b border-cyan-500/20 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+    <header className="sticky top-0 z-50 bg-[#FFF570]/95 backdrop-blur-xs border-b-2 border-black select-none">
       
-      {/* Top Telemetry Ticker Ribbon */}
-      <div className="bg-gradient-to-r from-slate-950 via-cyan-950/40 to-slate-950 border-b border-cyan-900/30 px-4 py-1 flex items-center justify-between text-[10px] font-mono text-cyan-400/90">
-        <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
-          <span className="flex items-center gap-1.5 font-bold tracking-wider text-cyan-300">
-            <Satellite className="w-3 h-3 text-cyan-400 animate-pulse" />
-            ISRO OCEANSAT-3 (EOS-06)
-          </span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-400 truncate hidden sm:inline">
-            ACTIVE SENSOR: OCM-3 HYPERSPECTRAL ? SWELL RADAR 14.8 KM/H ? GEMINI 3.6 FLASH REASONING ACTIVE
-          </span>
+      {/* Top Editorial Metadata Bar - Matching Image 1 */}
+      <div className="w-full px-4 md:px-8 py-2 border-b border-black grid grid-cols-2 md:grid-cols-4 items-center gap-2 font-mono text-[10px] md:text-[12px] tracking-[0.16em] uppercase font-bold text-black">
+        {/* Col 1 */}
+        <div className="flex items-center gap-2">
+          <Satellite className="w-3.5 h-3.5 text-black animate-pulse" />
+          <span>ISRO OCEANSAT-3 // EOS-06</span>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            LIVE SENSORS
-          </span>
-          <span className="text-slate-300 font-mono tracking-widest">{tickerTime}</span>
+        {/* Col 2 */}
+        <div className="text-right md:text-center">
+          <span>INDIAN OCEAN EEZ // ARABIAN SEA</span>
+        </div>
+
+        {/* Col 3 */}
+        <div className="hidden md:block text-center">
+          <span className="border border-black px-2 py-0.5 text-[10px]">2026 EDITION // VOL. 02</span>
+        </div>
+
+        {/* Col 4 */}
+        <div className="text-right flex items-center justify-end gap-2 font-extrabold">
+          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+          <span>ORCA MARITIME COGNITION</span>
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      {/* Main Operational Controls Bar */}
+      <div className="px-4 md:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
         
-        {/* Branding & Logo with Holographic Glow */}
-        <div className="flex items-center gap-3 group cursor-pointer" onClick={() => setActiveTab('command')}>
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 p-0.5 shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all duration-300">
-            <div className="w-full h-full bg-[#050b18] rounded-[10px] flex items-center justify-center overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-transparent pointer-events-none" />
-              <Compass className="w-5 h-5 text-cyan-300 group-hover:rotate-45 transition-transform duration-500" />
-            </div>
+        {/* Branding & Logo */}
+        <div 
+          className="flex items-center gap-3 cursor-pointer group"
+          onClick={() => setActiveTab('command')}
+        >
+          <div className="w-9 h-9 border-2 border-black bg-black text-[#FFF570] flex items-center justify-center font-bebas text-xl font-bold tracking-tight">
+            SA
           </div>
-
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-extrabold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400 font-sans">
-                SAMUDRA<span className="text-cyan-400">AI</span>
-              </h1>
-              <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-900/60 to-cyan-900/60 text-cyan-300 border border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+              <span className="font-bebas text-2xl tracking-wide text-black leading-none">
+                SAMUDRA AI
+              </span>
+              <span className="bg-black text-[#FFF570] px-1.5 py-0.5 text-[9px] font-bold">
                 ISRO 2.0
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 tracking-wide font-medium">
-              Agentic Marine Intelligence & Dynamic Risk Matrix
-            </p>
+            <div className="text-[10px] text-black/75 tracking-wider uppercase font-semibold">
+              AGENTIC MARINE INTELLIGENCE & SAFETY
+            </div>
           </div>
         </div>
 
-        {/* View Switcher Tabs (Futuristic Segmented Controls) */}
-        <div className="flex items-center bg-[#070e20] p-1 rounded-xl border border-cyan-900/40 shadow-inner text-xs">
+        {/* Spread Navigation Tabs */}
+        <div className="flex items-center border-2 border-black divide-x-2 divide-black bg-[#FFF570]">
           <button
             onClick={() => setActiveTab('command')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
+            className={`px-3 py-1.5 font-bold uppercase transition-colors cursor-pointer ${
               activeTab === 'command'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                ? 'bg-black text-[#FFF570]'
+                : 'text-black hover:bg-black/10'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Command Center</span>
+            [00] COMMAND DECK
           </button>
           
           <button
             onClick={() => setActiveTab('trends')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
+            className={`px-3 py-1.5 font-bold uppercase transition-colors cursor-pointer ${
               activeTab === 'trends'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                ? 'bg-black text-[#FFF570]'
+                : 'text-black hover:bg-black/10'
             }`}
           >
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>24h Trends</span>
+            [01] 24H TRENDS
           </button>
 
           <button
             onClick={() => setActiveTab('data_sources')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
+            className={`px-3 py-1.5 font-bold uppercase transition-colors cursor-pointer ${
               activeTab === 'data_sources'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                ? 'bg-black text-[#FFF570]'
+                : 'text-black hover:bg-black/10'
             }`}
           >
-            <Database className="w-3.5 h-3.5" />
-            <span>Data Sources</span>
+            [02] DATA PROVENANCE
           </button>
 
           <button
             onClick={() => setActiveTab('architecture')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
+            className={`px-3 py-1.5 font-bold uppercase transition-colors cursor-pointer ${
               activeTab === 'architecture'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                ? 'bg-black text-[#FFF570]'
+                : 'text-black hover:bg-black/10'
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
-            <span>Architecture</span>
+            [03] ARCHITECTURE
           </button>
         </div>
 
-        {/* Tactical Controls: Coastal Presets, Language, Audio */}
-        <div className="flex items-center gap-2.5">
+        {/* Tactical Controls: Coastal Presets, Coordinates, Language, Audio */}
+        <div className="flex items-center gap-2">
           
-          {/* Coastal Hub Selector */}
-          <div className="flex items-center bg-[#070e20] border border-cyan-900/50 hover:border-cyan-500/60 rounded-xl px-3 py-1.5 text-xs transition-all shadow-sm">
-            <MapPin className="w-3.5 h-3.5 text-cyan-400 mr-1.5 flex-shrink-0 animate-bounce" />
+          {/* Coastal Harbor Selector */}
+          <div className="flex items-center border-2 border-black px-2 py-1 bg-white/70">
+            <MapPin className="w-3.5 h-3.5 text-black mr-1 flex-shrink-0" />
             <select
               value={coastalPresets.find(p => p.name.includes(activeLocationName.split(',')[0]))?.id || ''}
               onChange={(e) => {
@@ -185,11 +175,11 @@ export const Header: React.FC = () => {
                   setActiveLocation({ latitude: selected.latitude, longitude: selected.longitude }, `${selected.name}, ${selected.state}`);
                 }
               }}
-              className="bg-transparent text-slate-200 outline-none cursor-pointer max-w-[140px] truncate font-medium"
+              className="bg-transparent text-black outline-none cursor-pointer max-w-[130px] font-bold text-[11px]"
             >
-              <option value="" disabled className="bg-slate-900 text-slate-400">Select Harbor</option>
+              <option value="" disabled>Select Harbor</option>
               {coastalPresets.map((p) => (
-                <option key={p.id} value={p.id} className="bg-slate-900 text-slate-200">
+                <option key={p.id} value={p.id} className="bg-[#FFF570] text-black">
                   {p.name}
                 </option>
               ))}
@@ -198,39 +188,43 @@ export const Header: React.FC = () => {
             <button
               title="Enter custom latitude/longitude"
               onClick={() => setShowCoordModal(true)}
-              className="ml-2 text-slate-400 hover:text-cyan-300 p-0.5 cursor-pointer"
+              className="ml-1.5 text-black hover:bg-black hover:text-[#FFF570] px-1 py-0.5 border border-black cursor-pointer font-bold text-[10px]"
             >
-              <Sliders className="w-3.5 h-3.5" />
+              +POS
             </button>
           </div>
 
-          {/* Regional Language Selector */}
-          <div className="relative">
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="bg-[#070e20] border border-cyan-900/50 hover:border-cyan-500/60 text-slate-200 font-medium rounded-xl px-3 py-1.5 text-xs outline-none cursor-pointer transition-all shadow-sm"
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code} className="bg-slate-900 text-slate-200">
-                  {l.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Language Selector */}
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="border-2 border-black px-2 py-1 text-[11px] font-bold bg-white/70 text-black outline-none cursor-pointer"
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code} className="bg-[#FFF570] text-black">
+                {l.name}
+              </option>
+            ))}
+          </select>
 
-          {/* Audio Waveform Readout Toggle */}
+          {/* Voice Toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             title={soundEnabled ? "Mute voice synthesis" : "Enable voice synthesis"}
-            className={`p-2 rounded-xl border transition-all duration-200 cursor-pointer ${
+            className={`border-2 border-black px-2.5 py-1 font-bold text-[10px] uppercase flex items-center gap-1 cursor-pointer transition-colors ${
               soundEnabled
-                ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.3)]'
-                : 'bg-[#070e20] border-slate-800 text-slate-500 hover:text-slate-300'
+                ? 'bg-black text-[#FFF570]'
+                : 'bg-white/70 text-black hover:bg-black/10'
             }`}
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-cyan-400" /> : <VolumeX className="w-4 h-4" />}
+            {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-[#FFF570]" /> : <VolumeX className="w-3.5 h-3.5" />}
+            <span className="hidden sm:inline">{soundEnabled ? 'VOICE ON' : 'VOICE OFF'}</span>
           </button>
+
+          {/* Time Display */}
+          <div className="hidden lg:block border border-black px-2 py-1 text-[10px] font-bold bg-black text-[#FFF570]">
+            {tickerTime || '18:30:00 IST'}
+          </div>
 
         </div>
 
@@ -238,51 +232,62 @@ export const Header: React.FC = () => {
 
       {/* Coordinate Modal */}
       {showCoordModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-gradient-to-b from-slate-900 to-[#050b18] border border-cyan-500/40 rounded-2xl p-6 max-w-sm w-full shadow-[0_0_50px_rgba(6,182,212,0.25)] relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500" />
-            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-cyan-400" /> Custom Marine Coordinate
-            </h3>
-            <p className="text-xs text-slate-400 mb-4">
-              Enter decimal latitude and longitude anywhere in the Arabian Sea, Bay of Bengal, or Indian Ocean.
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="border-2 border-black bg-[#FFF570] p-6 max-w-sm w-full shadow-[6px_6px_0px_0px_#000000] relative">
+            <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-4">
+              <h3 className="text-sm font-bold text-black uppercase flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-black" /> CUSTOM MARINE COORDINATE
+              </h3>
+              <button 
+                onClick={() => setShowCoordModal(false)}
+                className="font-bold text-black hover:bg-black hover:text-[#FFF570] px-1 border border-black cursor-pointer"
+              >
+                X
+              </button>
+            </div>
+            
+            <p className="text-xs text-black/80 mb-4 font-mono">
+              SPECIFY DECIMAL LATITUDE & LONGITUDE FOR INDIAN OCEAN SATELLITE INTERSECTION:
             </p>
-            <form onSubmit={handleApplyCoords} className="space-y-3.5">
+
+            <form onSubmit={handleApplyCoords} className="space-y-4 font-mono text-xs">
               <div>
-                <label className="block text-[11px] text-slate-300 mb-1 font-mono">Latitude (?N):</label>
+                <label className="block text-black font-bold uppercase mb-1">LATITUDE (°N):</label>
                 <input
                   type="number"
                   step="0.0001"
                   value={inputLat}
                   onChange={(e) => setInputLat(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-cyan-300 font-mono outline-none focus:border-cyan-400"
+                  className="w-full border-2 border-black p-2 bg-white text-black font-bold outline-none"
                   required
                 />
               </div>
+
               <div>
-                <label className="block text-[11px] text-slate-300 mb-1 font-mono">Longitude (?E):</label>
+                <label className="block text-black font-bold uppercase mb-1">LONGITUDE (°E):</label>
                 <input
                   type="number"
                   step="0.0001"
                   value={inputLon}
                   onChange={(e) => setInputLon(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-cyan-300 font-mono outline-none focus:border-cyan-400"
+                  className="w-full border-2 border-black p-2 bg-white text-black font-bold outline-none"
                   required
                 />
               </div>
+
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCoordModal(false)}
-                  className="px-3.5 py-1.5 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  className="border-2 border-black px-4 py-1.5 font-bold uppercase hover:bg-black/10 cursor-pointer"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl text-xs bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-900/40 cursor-pointer"
+                  className="border-2 border-black px-4 py-1.5 bg-black text-[#FFF570] font-bold uppercase hover:bg-transparent hover:text-black cursor-pointer"
                 >
-                  Set Coordinate
+                  APPLY VECTOR
                 </button>
               </div>
             </form>

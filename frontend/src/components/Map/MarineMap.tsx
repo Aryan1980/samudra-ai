@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useApp } from '../../context/AppContext';
 import { MapLayersControl } from './MapLayersControl';
 import { api } from '../../services/api';
-import { Compass, Navigation, Radio } from 'lucide-react';
+import { Compass } from 'lucide-react';
 
-export const MarineMap: React.FC = () => {
+export const MarineMap = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layerGroupsRef = useRef<{ [key: string]: L.LayerGroup }>({});
@@ -408,7 +408,12 @@ export const MarineMap: React.FC = () => {
   }, [activeMapLayers]);
 
   return (
-    <div className="relative w-full h-full min-h-[450px] rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_35px_rgba(0,0,0,0.6)] bg-[#020617]">
+    <div className="relative w-full h-full min-h-[450px] border-2 border-black bg-[#FFF570] shadow-[4px_4px_0px_0px_#000000] overflow-hidden">
+      {/* Corner alignment crosshairs */}
+      <span className="absolute top-1 left-1 font-mono text-xs font-bold text-black z-[450] pointer-events-none">+</span>
+      <span className="absolute top-1 right-1 font-mono text-xs font-bold text-black z-[450] pointer-events-none">+</span>
+      <span className="absolute bottom-1 left-1 font-mono text-xs font-bold text-black z-[450] pointer-events-none">+</span>
+      <span className="absolute bottom-1 right-1 font-mono text-xs font-bold text-black z-[450] pointer-events-none">+</span>
       
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
@@ -416,27 +421,24 @@ export const MarineMap: React.FC = () => {
       {/* Floating Tactical Layer Control */}
       <MapLayersControl />
 
-      {/* Futuristic Floating HUD Bar (Bottom Left) */}
-      <div className="absolute bottom-4 left-4 z-[400] flex items-center gap-3 bg-[#050b18]/85 backdrop-blur-xl px-4 py-2 rounded-xl border border-cyan-500/30 shadow-[0_0_20px_rgba(0,0,0,0.6)] text-xs text-slate-200">
+      {/* Swiss Brutalist Floating HUD Bar (Bottom Left) */}
+      <div className="absolute bottom-3 left-3 z-[400] flex items-center gap-3 bg-black text-[#FFF570] px-3 py-1.5 border border-[#FFF570] font-mono text-[11px]">
         <div className="flex items-center gap-2">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-          </span>
-          <span className="font-mono font-bold text-cyan-300 text-[11px]">
-            {activeLocation.latitude.toFixed(4)}?N, {activeLocation.longitude.toFixed(4)}?E
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span className="font-bold">
+            LAT: {activeLocation.latitude.toFixed(4)}° N, LON: {activeLocation.longitude.toFixed(4)}° E
           </span>
         </div>
-        <span className="text-slate-600">|</span>
-        <span className="text-[11px] text-slate-400 hidden sm:inline">
-          Click map to inspect any coordinate
+        <span className="text-[#FFF570]/40">|</span>
+        <span className="text-[10px] text-[#FFF570]/80 hidden sm:inline">
+          INTERACTIVE TACTICAL VIEWPORT
         </span>
       </div>
 
       {/* Compass Rose Badge (Top Left) */}
-      <div className="absolute top-4 left-4 z-[400] bg-[#050b18]/80 backdrop-blur-md p-2 rounded-xl border border-cyan-500/30 shadow-lg text-cyan-400 pointer-events-none flex items-center gap-2">
-        <Compass className="w-4 h-4 text-cyan-400 animate-spin-slow" />
-        <span className="text-[10px] font-mono tracking-widest font-bold text-cyan-300">NORTH 000?</span>
+      <div className="absolute top-3 left-3 z-[400] bg-black text-[#FFF570] px-2.5 py-1 border border-[#FFF570] pointer-events-none flex items-center gap-1.5 font-mono text-[10px] font-bold">
+        <Compass className="w-3.5 h-3.5 text-[#FFF570] animate-spin-slow" />
+        <span>BEARING 000° TRUE NORTH</span>
       </div>
 
     </div>
