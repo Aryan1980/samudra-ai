@@ -214,12 +214,23 @@ FORMATTING REQUIREMENTS:
 - Keep the tone serious, respectful, and suitable for an ISRO operational tool.
 """
                 import concurrent.futures
+                def _call_gemini():
+                    for model_name in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.6-flash"]:
+                        try:
+                            res = client.models.generate_content(model=model_name, contents=prompt)
+                            if res and res.text:
+                                return res.text.strip()
+                        except Exception:
+                            continue
+                    return None
+
                 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                    future = executor.submit(client.models.generate_content, model="gemini-3.6-flash", contents=prompt)
-                    res = future.result(timeout=7.0)
-                if res and res.text:
+                    future = executor.submit(_call_gemini)
+                    direct_text = future.result(timeout=15.0)
+
+                if direct_text:
                     return {
-                        "direct_answer": res.text.strip(),
+                        "direct_answer": direct_text,
                         "safety_verdict": risk.safety_verdict,
                         "recommendation": risk.recommendation
                     }
