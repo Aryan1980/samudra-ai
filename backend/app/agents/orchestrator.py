@@ -165,6 +165,7 @@ class AgentOrchestrator:
             plan.intent, risk, weather, ocean, flow_steps
         )
         resp_content = self.explanation_agent.generate_response(
+            query=req.query,
             intent=plan.intent,
             lang=plan.language,
             risk=risk,
