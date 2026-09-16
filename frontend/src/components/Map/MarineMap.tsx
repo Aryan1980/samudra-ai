@@ -3,6 +3,7 @@ import L from 'leaflet';
 import { useApp } from '../../context/AppContext';
 import { MapLayersControl } from './MapLayersControl';
 import { api } from '../../services/api';
+import { DEFAULT_GEOFENCES } from '../../data/coastalData';
 import { Compass } from 'lucide-react';
 
 export const MarineMap = () => {
@@ -191,7 +192,9 @@ export const MarineMap = () => {
 
   // 5. Render Ocean Geofences (IMBL, MPAs, Restricted Zones)
   useEffect(() => {
-    api.getGeofences().then((geofences) => {
+    const renderGeofences = (geofences: any) => {
+      if (!geofences) return;
+
       // IMBL
       const imblGroup = layerGroupsRef.current['imbl'];
       if (imblGroup) {
@@ -204,7 +207,7 @@ export const MarineMap = () => {
               dashArray: '8, 8'
             }).bindPopup(`
               <div class="p-2 text-slate-100 font-sans text-xs">
-                <strong class="text-amber-400 flex items-center gap-1 font-bold">?? ${b.name}</strong>
+                <strong class="text-amber-400 flex items-center gap-1 font-bold">⚠️ ${b.name}</strong>
                 <p class="text-[11px] text-slate-300 mt-1 leading-relaxed">${b.description}</p>
                 <div class="mt-2 pt-1 border-t border-slate-700 text-[10px] text-rose-400 font-semibold">
                   Security buffer: ${b.buffer_warning_km} km
@@ -229,7 +232,7 @@ export const MarineMap = () => {
               fillOpacity: 0.25
             }).bindPopup(`
               <div class="p-2 text-slate-100 font-sans text-xs">
-                <strong class="text-rose-400 font-bold flex items-center gap-1">??? ${m.name}</strong>
+                <strong class="text-rose-400 font-bold flex items-center gap-1">🛡️ ${m.name}</strong>
                 <div class="text-[11px] text-slate-300 mt-1">${m.type} (${m.state})</div>
                 <div class="mt-2 p-1.5 rounded bg-rose-950/60 border border-rose-800/80 text-[10px] text-rose-200 font-medium">
                   ${m.restriction}
@@ -255,7 +258,7 @@ export const MarineMap = () => {
               dashArray: '5, 5'
             }).bindPopup(`
               <div class="p-2 text-slate-100 font-sans text-xs">
-                <strong class="text-purple-300 font-bold flex items-center gap-1">? ${rz.name}</strong>
+                <strong class="text-purple-300 font-bold flex items-center gap-1">⚓ ${rz.name}</strong>
                 <div class="text-[11px] text-slate-400 mt-1">Authority: ${rz.authority}</div>
                 <div class="mt-2 p-1.5 rounded bg-purple-950/60 border border-purple-800/80 text-[10px] text-purple-200 font-medium">
                   ${rz.restriction}
@@ -266,7 +269,16 @@ export const MarineMap = () => {
           });
         }
       }
-    }).catch(console.error);
+    };
+
+    api.getGeofences()
+      .then((geofences) => {
+        if (geofences) renderGeofences(geofences);
+      })
+      .catch((err) => {
+        console.warn('Backend geofences unreachable, applying default maritime boundaries:', err);
+        renderGeofences(DEFAULT_GEOFENCES);
+      });
   }, [activeMapLayers]);
 
   // 6. Render SST & Chlorophyll Gradients

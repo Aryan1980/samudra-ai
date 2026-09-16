@@ -29,6 +29,8 @@ export const Header = () => {
     activeTab,
     soundEnabled,
     coastalPresets,
+    backendStatus,
+    checkBackendStatus,
     setActiveLocation,
     setLanguage,
     setActiveTab,
@@ -81,10 +83,26 @@ export const Header = () => {
           <span className="border border-black px-2 py-0.5 text-[10px]">2026 EDITION // VOL. 02</span>
         </div>
 
-        {/* Col 4 */}
-        <div className="text-right flex items-center justify-end gap-2 font-extrabold">
-          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-          <span>ORCA MARITIME COGNITION</span>
+        {/* Col 4 - Live Backend Status */}
+        <div 
+          onClick={() => checkBackendStatus()}
+          title="Backend Service Status - Click to refresh connection"
+          className="text-right flex items-center justify-end gap-2 font-extrabold cursor-pointer group"
+        >
+          <span className={`w-2 h-2 rounded-full ${
+            backendStatus === 'online'
+              ? 'bg-emerald-600 animate-ping'
+              : backendStatus === 'connecting'
+                ? 'bg-amber-500 animate-pulse'
+                : 'bg-rose-600'
+          }`}></span>
+          <span className="group-hover:underline text-[10px] md:text-[11px]">
+            {backendStatus === 'online'
+              ? 'BACKEND: ACTIVE'
+              : backendStatus === 'connecting'
+                ? 'BACKEND: CONNECTING...'
+                : 'EDGE READY (OFFLINE MODE)'}
+          </span>
         </div>
       </div>
 

@@ -2,16 +2,24 @@ import { useEffect, useState } from 'react';
 import { Database, CheckCircle, Radio, Key, RefreshCw } from 'lucide-react';
 import { api } from '../../services/api';
 import { DataSourceInfo } from '../../types/marine';
+import { DEFAULT_DATA_SOURCES } from '../../data/coastalData';
 
 export const DataSourcesView = () => {
-  const [sources, setSources] = useState<DataSourceInfo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [sources, setSources] = useState<DataSourceInfo[]>(DEFAULT_DATA_SOURCES);
+  const [loading, setLoading] = useState(false);
 
   const fetchSources = () => {
     setLoading(true);
     api.getDataSources()
-      .then((data) => setSources(data))
-      .catch(console.error)
+      .then((data) => {
+        if (data && data.length > 0) {
+          setSources(data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Backend data sources API unavailable, showing default verified provenance:', err);
+        setSources(DEFAULT_DATA_SOURCES);
+      })
       .finally(() => setLoading(false));
   };
 
